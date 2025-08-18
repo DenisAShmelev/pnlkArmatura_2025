@@ -31,6 +31,7 @@ namespace PnlkArmatura
 
             switch (Position_Plane.ToUpper())
             {
+                //[MIDDLE;LEFT;RIGHT]
                 case "MIDDLE":
                     panel.Position.Plane = TSM.Position.PlaneEnum.MIDDLE; // середина
                     break;
@@ -59,6 +60,7 @@ namespace PnlkArmatura
 
             switch (Position_Depth.ToUpper())
             {
+                //[MIDDLE СЕРЕДИНА;FRONT СПЕРЕДИ;BEHIND ПОЗАДИ]
                 case "MIDDLE":
                     panel.Position.Depth = TSM.Position.DepthEnum.MIDDLE; // середина
                     break;
@@ -87,6 +89,7 @@ namespace PnlkArmatura
 
             switch (Position_Rotation.ToUpper())
             {
+                //[TOP СВЕРХУ;FRONT СПЕРЕДИ;BELOW СНИЗУ;BACK СЗАДИ]
                 case "TOP":
                     panel.Position.Rotation = TSM.Position.RotationEnum.TOP; // сверху
                     break;
