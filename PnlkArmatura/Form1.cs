@@ -21,41 +21,21 @@ namespace PnlkArmatura
     public partial class Form1 : Form
     {
         TSM.Model MyModel = new TSM.Model();
-
-        double currentPartLength = 0.00;
-        double currentPartHeight = 0.00;
-        double currentPartWidth = 0.00;
-
-
-
         public Form1()
-        {
-            InitializeComponent();
-        }
+        { InitializeComponent(); }
 
         private bool InitializeConnection()
-        {
+        { 
             TSM.Model _model = new TSM.Model();
             if (_model.GetConnectionStatus())
-            {
-                MyModel = _model;
-                return true;
-            }
+            { MyModel = _model; return true; }
             else
-            {
-                return false;
-            }
+            { return false; } 
         }
         private void Form1_Load(object sender, EventArgs e)
         {
             if (!InitializeConnection())
-            {
-                MessageBox.Show("Подключиться не удалось");
-                // this.Close();
-
-
-
-            }
+            { MessageBox.Show("Подключиться не удалось"); }// this.Close();
         }
 
         // Установить рабочую плоскость 
@@ -199,16 +179,6 @@ namespace PnlkArmatura
             {
                 Console.WriteLine("Exception: " + W.ToString());
             }
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -384,8 +354,8 @@ namespace PnlkArmatura
             TSM.UI.Picker firstpick = new TSM.UI.Picker();
             TSM.Part firstp = firstpick.PickObject(TSM.UI.Picker.PickObjectEnum.PICK_ONE_OBJECT, "Выберите объект 1") as TSM.Part;
 
-         //   TSMUI.Picker picker = new TSMUI.Picker();
-         //   ArrayList picker_1 = picker.PickPoints(TSMUI.Picker.PickPointEnum.PICK_FACE, "Укажи грань");
+            //   TSMUI.Picker picker = new TSMUI.Picker();
+            //   ArrayList picker_1 = picker.PickPoints(TSMUI.Picker.PickPointEnum.PICK_FACE, "Укажи грань");
 
             //1. Сохранить текущую рабочую плоскость как локальную переменную, чтобы восстановить её позже.
             TSM.TransformationPlane currentPlane = MyModel.GetWorkPlaneHandler().GetCurrentTransformationPlane();
@@ -396,24 +366,10 @@ namespace PnlkArmatura
 
 
 
-            TSG.Point p0;
-            TSG.Point p1;
-            TSG.Point p2;
-            TSG.Point p3;
-            TSG.Point p4;
-            TSG.Point p5;
-            TSG.Point p6;
-            TSG.Point p7;
-            TSG.Point p8;
-            TSG.Point p9;
-            TSG.Point p10;
-            TSG.Point p11;
-            TSG.Point p12;
-
-        //   p1 = picker_1[0] as TSG.Point;
-        //   p2 = picker_1[1] as TSG.Point;
-        //   p3 = picker_1[2] as TSG.Point;
-        //   p4 = picker_1[3] as TSG.Point;
+            //   p1 = picker_1[0] as TSG.Point;
+            //   p2 = picker_1[1] as TSG.Point;
+            //   p3 = picker_1[2] as TSG.Point;
+            //   p4 = picker_1[3] as TSG.Point;
 
             Beam firstp1 = firstp as Beam;
             //TSM.Solid solid1 = firstp.GetSolid() as TSM.Solid;
@@ -576,7 +532,7 @@ namespace PnlkArmatura
             TSM.UI.Picker firstpick = new TSM.UI.Picker();
             TSM.Part firstp = firstpick.PickObject(TSM.UI.Picker.PickObjectEnum.PICK_ONE_OBJECT, "Выберите объект 1") as TSM.Part;
 
-            
+
 
 
             TSMUI.Picker picker = new TSMUI.Picker();
@@ -591,19 +547,6 @@ namespace PnlkArmatura
 
 
 
-            TSG.Point p0;
-            TSG.Point p1;
-            TSG.Point p2;
-            TSG.Point p3;
-            TSG.Point p4;
-            TSG.Point p5;
-            TSG.Point p6;
-            TSG.Point p7;
-            TSG.Point p8;
-            TSG.Point p9;
-            TSG.Point p10;
-            TSG.Point p11;
-            TSG.Point p12;
 
             Beam firstp1 = firstp as Beam;
             //TSM.Solid solid1 = firstp.GetSolid() as TSM.Solid;
@@ -660,6 +603,151 @@ namespace PnlkArmatura
             RebarGroup.Name = "Modified Group 1";
             RebarGroup.Modify();
             MyModel.CommitChanges();
+        }
+
+        #region Создание арматуры подходящее
+        private void button7_Click(object sender, EventArgs e)
+        {
+            TSM.UI.Picker firstpick = new TSM.UI.Picker();
+            TSM.Part firstp = firstpick.PickObject(TSM.UI.Picker.PickObjectEnum.PICK_ONE_OBJECT, "Выберите объект") as TSM.Part;
+
+            //1. Сохранить текущую рабочую плоскость как локальную переменную, чтобы восстановить её позже.
+            TSM.TransformationPlane currentPlane = MyModel.GetWorkPlaneHandler().GetCurrentTransformationPlane();
+            // Получаем локальную рабочую плоскость детали с выделенной балки.
+            TSM.TransformationPlane localPlane = new TSM.TransformationPlane(firstp.GetCoordinateSystem());
+            // Переносим рабочую плоскость модели на локальную рабочую плоскость детали.
+            MyModel.GetWorkPlaneHandler().SetCurrentTransformationPlane(localPlane);
+
+            //Beam firstp1 = firstp as Beam;
+
+            double MinimumX = firstp.GetSolid().MinimumPoint.X;
+            double MinimumY = firstp.GetSolid().MinimumPoint.Y;
+            double MinimumZ = firstp.GetSolid().MinimumPoint.Z;
+            double MaximumX = firstp.GetSolid().MaximumPoint.X;
+            double MaximumY = firstp.GetSolid().MaximumPoint.Y;
+            double MaximumZ = firstp.GetSolid().MaximumPoint.Z;
+
+            Polygon Polygon = new Polygon();
+            Polygon.Points.Add(new Tekla.Structures.Geometry3d.Point(MinimumX, MaximumY, MinimumZ));
+            Polygon.Points.Add(new Tekla.Structures.Geometry3d.Point(MinimumX, MinimumY, MinimumZ));
+            Polygon.Points.Add(new Tekla.Structures.Geometry3d.Point(MinimumX, MinimumY, MaximumZ));
+            Polygon.Points.Add(new Tekla.Structures.Geometry3d.Point(MinimumX, MaximumY, MaximumZ));
+
+            Polygon Polygon2 = new Polygon();
+            Polygon2.Points.Add(new Tekla.Structures.Geometry3d.Point(MaximumX, MaximumY, MinimumZ));
+            Polygon2.Points.Add(new Tekla.Structures.Geometry3d.Point(MaximumX, MinimumY, MinimumZ));
+            Polygon2.Points.Add(new Tekla.Structures.Geometry3d.Point(MaximumX, MinimumY, MaximumZ));
+            Polygon2.Points.Add(new Tekla.Structures.Geometry3d.Point(MaximumX, MaximumY, MaximumZ));
+
+            RebarGroup RebarGroup = new RebarGroup();
+            RebarGroup.Polygons.Add(Polygon);
+            RebarGroup.Polygons.Add(Polygon2);
+            RebarGroup.RadiusValues.Add(40.0);
+
+            RebarGroup.SpacingType = RebarGroup.RebarGroupSpacingTypeEnum.SPACING_TYPE_EXACT_SPACINGS; //Распределение - По точному значению шага (7)
+
+            #region Разбор строки с шагами чтобы ввести их в теклу
+            string input = txt_Step_Spacing.Text; // Исходная строка
+            string[] parts = input.Split(' '); // Разделяем строку по пробелам
+            foreach (string part in parts) // Проходим по каждому элементу массива
+            {
+                if (int.TryParse(part, out int number)) // Проверяем, является ли текущий элемент числом
+                { RebarGroup.Spacings.Add(Convert.ToDouble(number)); } // Если это число, выводим
+                else if (part.Contains("*"))
+                {
+                    string[] splitByAsterisk = part.Split('*'); // Если элемент содержит символ "*", разделяем его на две части
+                    if (int.TryParse(splitByAsterisk[0], out int repeatCount)) // Проверяем, является ли первая часть числом
+                    {
+                        if (splitByAsterisk.Length > 1) // Если вторая часть существует, повторяем её указанное количество раз
+                        {
+                            for (int i = 1; i <= Convert.ToInt32(splitByAsterisk[0]); i++)
+                            { RebarGroup.Spacings.Add(Convert.ToDouble(splitByAsterisk[1])); }
+                        }
+                        else { Console.WriteLine($"строка=Ошибка: нет текста после '*' в '{part}'"); }
+                    }
+                    else { Console.WriteLine($"строка=Ошибка: некорректное число перед '*' в '{part}'"); }
+                }
+                else { Console.WriteLine($"строка={part}"); } // Если это не число и не содержит "*", выводим как есть
+            }
+            #endregion
+
+
+            RebarGroup.ExcludeType = RebarGroup.ExcludeTypeEnum.EXCLUDE_TYPE_FIRST; //Исключить - Первый
+
+            RebarGroup.Father = firstp; //Элемент к которому прикрепится арматура
+            RebarGroup.Name = "RebarGroup";
+            RebarGroup.Class = 500;
+            RebarGroup.Size = "12";
+            RebarGroup.NumberingSeries.StartNumber = 0;
+            RebarGroup.NumberingSeries.Prefix = "Group";
+            RebarGroup.Grade = "А500С";
+
+            // Защитный слой на плоскости. Добавлять по одному в строке. В программе соединится в одну строку
+            #region Разбор строки с отступами чтобы ввести их в теклу
+            string text_iz_OnPlaneOffsets = txt_OnPlaneOffsets.Text; // Исходная строка
+            string[] elementi_iz_OnPlaneOffsets = text_iz_OnPlaneOffsets.Split(' '); // Разделяем строку по пробелам
+            foreach (string odin_element_iz_OnPlaneOffsets in elementi_iz_OnPlaneOffsets) // Проходим по каждому элементу массива
+            {
+                if (int.TryParse(odin_element_iz_OnPlaneOffsets, out int number)) // Проверяем, является ли текущий элемент числом
+                { RebarGroup.OnPlaneOffsets.Add(Convert.ToDouble(number)); } // Если это число, выводим
+                else if (odin_element_iz_OnPlaneOffsets.Contains("*"))
+                {
+                    string[] elementi_razdelennie_po_zvezdochke = odin_element_iz_OnPlaneOffsets.Split('*'); // Если элемент содержит символ "*", разделяем его на две части
+                    if (int.TryParse(elementi_razdelennie_po_zvezdochke[0], out int repeatCount)) // Проверяем, является ли первая часть числом
+                    {
+                        if (elementi_razdelennie_po_zvezdochke.Length > 1) // Если вторая часть существует, повторяем её указанное количество раз
+                        {
+                            for (int i = 1; i <= Convert.ToInt32(elementi_razdelennie_po_zvezdochke[0]); i++)
+                            { RebarGroup.OnPlaneOffsets.Add(Convert.ToDouble(elementi_razdelennie_po_zvezdochke[1])); }
+                        }
+                        else { Console.WriteLine($"строка=Ошибка: нет текста после '*' в '{odin_element_iz_OnPlaneOffsets}'"); }
+                    }
+                    else { Console.WriteLine($"строка=Ошибка: некорректное число перед '*' в '{odin_element_iz_OnPlaneOffsets}'"); }
+                }
+                else { Console.WriteLine($"строка={odin_element_iz_OnPlaneOffsets}"); } // Если это не число и не содержит "*", выводим как есть
+            }
+            #endregion
+
+            RebarGroup.StartPointOffsetType = Reinforcement.RebarOffsetTypeEnum.OFFSET_TYPE_COVER_THICKNESS; //Защитный слой
+            RebarGroup.StartPointOffsetValue = 20; //Защитный слой - Начало
+            RebarGroup.EndPointOffsetType = Reinforcement.RebarOffsetTypeEnum.OFFSET_TYPE_COVER_THICKNESS; //Защитный слой
+            //RebarGroup.EndPointOffsetType = Reinforcement.RebarOffsetTypeEnum.OFFSET_TYPE_LEG_LENGTH; //Длина участка
+            RebarGroup.EndPointOffsetValue = 60; //Защитный слой - Конец
+            RebarGroup.FromPlaneOffset = 0; //Защитный слой - От плоскости
+
+            RebarGroup.Insert();
+
+            RebarGroup.Name = "Modified Group 1";
+            RebarGroup.Modify();
+            MyModel.CommitChanges();
+        }
+        #endregion
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            string input = txt_Step_Spacing.Text; // Исходная строка
+            string[] parts = input.Split(' '); // Разделяем строку по пробелам
+            foreach (string part in parts) // Проходим по каждому элементу массива
+            {
+                if (int.TryParse(part, out int number)) // Проверяем, является ли текущий элемент числом
+                { label4.Text = label4.Text + "\n" + $"число=" + Convert.ToString(number); } // Если это число, выводим
+                
+                else if (part.Contains("*"))
+                {
+                    string[] splitByAsterisk = part.Split('*'); // Если элемент содержит символ "*", разделяем его на две части
+                    if (int.TryParse(splitByAsterisk[0], out int repeatCount)) // Проверяем, является ли первая часть числом
+                    {
+                        if (splitByAsterisk.Length > 1) // Если вторая часть существует, повторяем её указанное количество раз
+                        {
+                            for (int i = 1; i <= Convert.ToInt32(splitByAsterisk[0]); i++)
+                            { label4.Text = label4.Text + "\n" + $"строка=" + Convert.ToString(splitByAsterisk[1]); }
+                        }
+                        else { Console.WriteLine($"строка=Ошибка: нет текста после '*' в '{part}'"); }
+                    }
+                    else { Console.WriteLine($"строка=Ошибка: некорректное число перед '*' в '{part}'"); }
+                }
+                else { Console.WriteLine($"строка={part}"); } // Если это не число и не содержит "*", выводим как есть
+            }
         }
     }
 }

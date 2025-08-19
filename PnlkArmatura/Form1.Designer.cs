@@ -41,7 +41,6 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.cmb_Position_Depth = new System.Windows.Forms.ComboBox();
             this.cmb_Position_Plane = new System.Windows.Forms.ComboBox();
             this.cmb_Position_Rotation = new System.Windows.Forms.ComboBox();
@@ -51,6 +50,11 @@
             this.button9 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.button20 = new System.Windows.Forms.Button();
+            this.button7 = new System.Windows.Forms.Button();
+            this.txt_Step_Spacing = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.button11 = new System.Windows.Forms.Button();
+            this.txt_OnPlaneOffsets = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button1
@@ -117,7 +121,6 @@
             this.label2.Size = new System.Drawing.Size(48, 13);
             this.label2.TabIndex = 7;
             this.label2.Text = "Высота:";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // txt_PanelHeight
             // 
@@ -125,7 +128,6 @@
             this.txt_PanelHeight.Name = "txt_PanelHeight";
             this.txt_PanelHeight.Size = new System.Drawing.Size(100, 20);
             this.txt_PanelHeight.TabIndex = 6;
-            this.txt_PanelHeight.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // label3
             // 
@@ -172,13 +174,6 @@
             this.button8.Text = "Создать балку button3";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click_1);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(15, 186);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(317, 20);
-            this.textBox1.TabIndex = 30;
             // 
             // cmb_Position_Depth
             // 
@@ -267,7 +262,7 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(338, 186);
+            this.button9.Location = new System.Drawing.Point(596, 196);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(150, 20);
             this.button9.TabIndex = 38;
@@ -295,11 +290,61 @@
             this.button20.UseVisualStyleBackColor = true;
             this.button20.Click += new System.EventHandler(this.button20_Click);
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(338, 187);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(150, 46);
+            this.button7.TabIndex = 52;
+            this.button7.Text = "Создать арматуру по значениям";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // txt_Step_Spacing
+            // 
+            this.txt_Step_Spacing.Location = new System.Drawing.Point(15, 187);
+            this.txt_Step_Spacing.Name = "txt_Step_Spacing";
+            this.txt_Step_Spacing.Size = new System.Drawing.Size(317, 20);
+            this.txt_Step_Spacing.TabIndex = 53;
+            this.txt_Step_Spacing.Text = "30 5*100 200 300";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(498, 9);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(35, 13);
+            this.label4.TabIndex = 54;
+            this.label4.Text = "label4";
+            // 
+            // button11
+            // 
+            this.button11.Location = new System.Drawing.Point(345, 287);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(142, 53);
+            this.button11.TabIndex = 55;
+            this.button11.Text = "button11";
+            this.button11.UseVisualStyleBackColor = true;
+            this.button11.Click += new System.EventHandler(this.button11_Click);
+            // 
+            // txt_OnPlaneOffsets
+            // 
+            this.txt_OnPlaneOffsets.Location = new System.Drawing.Point(15, 213);
+            this.txt_OnPlaneOffsets.Name = "txt_OnPlaneOffsets";
+            this.txt_OnPlaneOffsets.Size = new System.Drawing.Size(317, 20);
+            this.txt_OnPlaneOffsets.TabIndex = 56;
+            this.txt_OnPlaneOffsets.Text = "50 20 40 20 50";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 485);
+            this.Controls.Add(this.txt_OnPlaneOffsets);
+            this.Controls.Add(this.button11);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.txt_Step_Spacing);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.button20);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.button9);
@@ -309,7 +354,6 @@
             this.Controls.Add(this.cmb_Position_Rotation);
             this.Controls.Add(this.cmb_Position_Plane);
             this.Controls.Add(this.cmb_Position_Depth);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
@@ -345,7 +389,6 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox cmb_Position_Depth;
         private System.Windows.Forms.ComboBox cmb_Position_Plane;
         private System.Windows.Forms.ComboBox cmb_Position_Rotation;
@@ -355,6 +398,11 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button20;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.TextBox txt_Step_Spacing;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button11;
+        private System.Windows.Forms.TextBox txt_OnPlaneOffsets;
     }
 }
 
