@@ -264,13 +264,7 @@ namespace PnlkArmatura
             MyModel.CommitChanges();
         }
 
-        private void button6_Click(object sender, EventArgs e)
-        {
 
-            txt_PanelWidth.Text = "200";
-            txt_PanelHeight.Text = "2860";
-            txt_PanelLength.Text = "4000";
-        }
 
 
         private void button8_Click(object sender, EventArgs e)
@@ -329,10 +323,12 @@ namespace PnlkArmatura
             Convert.ToString(cmb_Position_Plane.Text);
             Convert.ToString(cmb_Position_Depth.Text);
             Convert.ToString(cmb_Position_Rotation.Text);
+            Convert.ToString(cb_PanelMaterial.Text);
+            Convert.ToString(txt_PanelName.Text);
 
             string ProfilPaneli = Convert.ToString(txt_PanelHeight.Text) + "*" + Convert.ToString(txt_PanelWidth.Text);
 
-            cl_CreateConcretPanel panel = new cl_CreateConcretPanel(0, 0, 0, Convert.ToDouble(txt_PanelLength.Text), 0, 0, ProfilPaneli, "B25", "Балка", "1", 5, "Б", 1, "123", Convert.ToString(cmb_Position_Plane.Text), Convert.ToString(cmb_Position_Depth.Text), Convert.ToString(cmb_Position_Rotation.Text));
+            cl_CreateConcretPanel panel = new cl_CreateConcretPanel(0, 0, 0, Convert.ToDouble(txt_PanelLength.Text), 0, 0, ProfilPaneli, Convert.ToString(cb_PanelMaterial.Text), Convert.ToString(txt_PanelName.Text), "1", 5, "Б", 1, "123", Convert.ToString(cmb_Position_Plane.Text), Convert.ToString(cmb_Position_Depth.Text), Convert.ToString(cmb_Position_Rotation.Text));
             //[MIDDLE СЕРЕДИНА; LEFT СЛЕВА; RIGHT СПРАВА] ; [MIDDLE СЕРЕДИНА;FRONT СПЕРЕДИ;BEHIND ПОЗАДИ] ; [TOP СВЕРХУ;FRONT СПЕРЕДИ;BELOW СНИЗУ;BACK СЗАДИ]
 
             panel.InsertPanel();
@@ -748,6 +744,235 @@ namespace PnlkArmatura
                 }
                 else { Console.WriteLine($"строка={part}"); } // Если это не число и не содержит "*", выводим как есть
             }
+        }
+
+
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            txt_PanelWidth.Text = "200";
+            txt_PanelHeight.Text = "2860";
+            txt_PanelLength.Text = "4000";
+            cb_PanelMaterial.Text = "B25";
+            txt_PanelName.Text = "Балка";
+            cmb_Position_Plane.Text = "LEFT";
+            cmb_Position_Depth.Text = "FRONT";
+            cmb_Position_Rotation.Text = "BEHIND";
+
+        }
+
+        private void cmb_Position_Depth_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button12_Click_1(object sender, EventArgs e)
+        {
+            txt_ArmaturaName.Text = "АПВ";
+            cb_ArmaturaSort.Text = "А500С";
+            cb_ArmaturaDiametr.Text = "12";
+            txt_ArmaturaClass.Text = "500";
+            txt_ArmaturaZSNachalo.Text = "20";
+            txt_ArmaturaZSKonec.Text = "20";
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+
+        }
+
+        private void cb_ArmaturaDiametr_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (Convert.ToString(cb_ArmaturaDiametr.Text) == "6")
+            {
+                cb_ArmaturaRadiusGiba.Text = "15";
+            }
+            else if (Convert.ToString(cb_ArmaturaDiametr.Text) == "8")
+            {
+                cb_ArmaturaRadiusGiba.Text = "20";
+            }
+            else if (Convert.ToString(cb_ArmaturaDiametr.Text) == "10")
+            {
+                cb_ArmaturaRadiusGiba.Text = "25";
+            }
+            else if (Convert.ToString(cb_ArmaturaDiametr.Text) == "12")
+            {
+                cb_ArmaturaRadiusGiba.Text = "30";
+            }
+        }
+
+        #region Создание арматуры подходящее
+        private void b_CreateArmatura_Click(object sender, EventArgs e)
+        {
+            TSM.UI.Picker firstpick = new TSM.UI.Picker();
+            TSM.Part firstp = firstpick.PickObject(TSM.UI.Picker.PickObjectEnum.PICK_ONE_OBJECT, "Выберите объект") as TSM.Part;
+
+            //1. Сохранить текущую рабочую плоскость как локальную переменную, чтобы восстановить её позже.
+            TSM.TransformationPlane currentPlane = MyModel.GetWorkPlaneHandler().GetCurrentTransformationPlane();
+            // Получаем локальную рабочую плоскость детали с выделенной балки.
+            TSM.TransformationPlane localPlane = new TSM.TransformationPlane(firstp.GetCoordinateSystem());
+            // Переносим рабочую плоскость модели на локальную рабочую плоскость детали.
+            MyModel.GetWorkPlaneHandler().SetCurrentTransformationPlane(localPlane);
+
+            //Beam firstp1 = firstp as Beam;
+
+            double MinimumX = firstp.GetSolid().MinimumPoint.X;
+            double MinimumY = firstp.GetSolid().MinimumPoint.Y;
+            double MinimumZ = firstp.GetSolid().MinimumPoint.Z;
+            double MaximumX = firstp.GetSolid().MaximumPoint.X;
+            double MaximumY = firstp.GetSolid().MaximumPoint.Y;
+            double MaximumZ = firstp.GetSolid().MaximumPoint.Z;
+
+            Polygon Polygon = new Polygon();
+            Polygon.Points.Add(new Tekla.Structures.Geometry3d.Point(MinimumX, MaximumY, MinimumZ));
+            Polygon.Points.Add(new Tekla.Structures.Geometry3d.Point(MinimumX, MinimumY, MinimumZ));
+            Polygon.Points.Add(new Tekla.Structures.Geometry3d.Point(MinimumX, MinimumY, MaximumZ));
+            Polygon.Points.Add(new Tekla.Structures.Geometry3d.Point(MinimumX, MaximumY, MaximumZ));
+
+            Polygon Polygon2 = new Polygon();
+            Polygon2.Points.Add(new Tekla.Structures.Geometry3d.Point(MaximumX, MaximumY, MinimumZ));
+            Polygon2.Points.Add(new Tekla.Structures.Geometry3d.Point(MaximumX, MinimumY, MinimumZ));
+            Polygon2.Points.Add(new Tekla.Structures.Geometry3d.Point(MaximumX, MinimumY, MaximumZ));
+            Polygon2.Points.Add(new Tekla.Structures.Geometry3d.Point(MaximumX, MaximumY, MaximumZ));
+
+            RebarGroup RebarGroup = new RebarGroup();
+            RebarGroup.Polygons.Add(Polygon);
+            RebarGroup.Polygons.Add(Polygon2);
+            RebarGroup.RadiusValues.Add(Convert.ToDouble(cb_ArmaturaRadiusGiba.Text)); 
+
+            RebarGroup.SpacingType = RebarGroup.RebarGroupSpacingTypeEnum.SPACING_TYPE_EXACT_SPACINGS; //Распределение - По точному значению шага (7)
+
+            #region Разбор строки с шагами чтобы ввести их в теклу
+            string input = txt_Step_Spacing.Text; // Исходная строка
+            string[] parts = input.Split(' '); // Разделяем строку по пробелам
+            foreach (string part in parts) // Проходим по каждому элементу массива
+            {
+                if (int.TryParse(part, out int number)) // Проверяем, является ли текущий элемент числом
+                { RebarGroup.Spacings.Add(Convert.ToDouble(number)); } // Если это число, выводим
+                else if (part.Contains("*"))
+                {
+                    string[] splitByAsterisk = part.Split('*'); // Если элемент содержит символ "*", разделяем его на две части
+                    if (int.TryParse(splitByAsterisk[0], out int repeatCount)) // Проверяем, является ли первая часть числом
+                    {
+                        if (splitByAsterisk.Length > 1) // Если вторая часть существует, повторяем её указанное количество раз
+                        {
+                            for (int i = 1; i <= Convert.ToInt32(splitByAsterisk[0]); i++)
+                            { RebarGroup.Spacings.Add(Convert.ToDouble(splitByAsterisk[1])); }
+                        }
+                        else { Console.WriteLine($"строка=Ошибка: нет текста после '*' в '{part}'"); }
+                    }
+                    else { Console.WriteLine($"строка=Ошибка: некорректное число перед '*' в '{part}'"); }
+                }
+                else { Console.WriteLine($"строка={part}"); } // Если это не число и не содержит "*", выводим как есть
+            }
+            #endregion
+
+
+            RebarGroup.ExcludeType = RebarGroup.ExcludeTypeEnum.EXCLUDE_TYPE_FIRST; //Исключить - Первый
+
+            RebarGroup.Father = firstp; //Элемент к которому прикрепится арматура
+            RebarGroup.Name = Convert.ToString(txt_ArmaturaName.Text);
+            RebarGroup.Class = Convert.ToInt32(txt_ArmaturaClass.Text);
+            RebarGroup.Size = Convert.ToString(cb_ArmaturaDiametr.Text);
+            RebarGroup.NumberingSeries.StartNumber = 0;
+            RebarGroup.NumberingSeries.Prefix = "Group";
+            RebarGroup.Grade = Convert.ToString(cb_ArmaturaSort.Text);
+
+            // Защитный слой на плоскости. Добавлять по одному в строке. В программе соединится в одну строку
+            #region Разбор строки с отступами чтобы ввести их в теклу
+            string text_iz_OnPlaneOffsets = txt_OnPlaneOffsets.Text; // Исходная строка
+            string[] elementi_iz_OnPlaneOffsets = text_iz_OnPlaneOffsets.Split(' '); // Разделяем строку по пробелам
+            foreach (string odin_element_iz_OnPlaneOffsets in elementi_iz_OnPlaneOffsets) // Проходим по каждому элементу массива
+            {
+                if (int.TryParse(odin_element_iz_OnPlaneOffsets, out int number)) // Проверяем, является ли текущий элемент числом
+                { RebarGroup.OnPlaneOffsets.Add(Convert.ToDouble(number)); } // Если это число, выводим
+                else if (odin_element_iz_OnPlaneOffsets.Contains("*"))
+                {
+                    string[] elementi_razdelennie_po_zvezdochke = odin_element_iz_OnPlaneOffsets.Split('*'); // Если элемент содержит символ "*", разделяем его на две части
+                    if (int.TryParse(elementi_razdelennie_po_zvezdochke[0], out int repeatCount)) // Проверяем, является ли первая часть числом
+                    {
+                        if (elementi_razdelennie_po_zvezdochke.Length > 1) // Если вторая часть существует, повторяем её указанное количество раз
+                        {
+                            for (int i = 1; i <= Convert.ToInt32(elementi_razdelennie_po_zvezdochke[0]); i++)
+                            { RebarGroup.OnPlaneOffsets.Add(Convert.ToDouble(elementi_razdelennie_po_zvezdochke[1])); }
+                        }
+                        else { Console.WriteLine($"строка=Ошибка: нет текста после '*' в '{odin_element_iz_OnPlaneOffsets}'"); }
+                    }
+                    else { Console.WriteLine($"строка=Ошибка: некорректное число перед '*' в '{odin_element_iz_OnPlaneOffsets}'"); }
+                }
+                else { Console.WriteLine($"строка={odin_element_iz_OnPlaneOffsets}"); } // Если это не число и не содержит "*", выводим как есть
+            }
+            #endregion
+
+            RebarGroup.StartPointOffsetType = Reinforcement.RebarOffsetTypeEnum.OFFSET_TYPE_COVER_THICKNESS; //Защитный слой
+            RebarGroup.StartPointOffsetValue = 20; //Защитный слой - Начало
+            RebarGroup.EndPointOffsetType = Reinforcement.RebarOffsetTypeEnum.OFFSET_TYPE_COVER_THICKNESS; //Защитный слой
+            //RebarGroup.EndPointOffsetType = Reinforcement.RebarOffsetTypeEnum.OFFSET_TYPE_LEG_LENGTH; //Длина участка
+            RebarGroup.EndPointOffsetValue = 60; //Защитный слой - Конец
+            RebarGroup.FromPlaneOffset = 0; //Защитный слой - От плоскости
+
+            RebarGroup.Insert();
+
+            RebarGroup.Name = Convert.ToString(txt_ArmaturaName.Text);
+            RebarGroup.Modify();
+            MyModel.CommitChanges();
+        }
+        #endregion
+
+        private void b_CreatePanel_Click(object sender, EventArgs e)
+        {
+            Convert.ToDouble(txt_PanelWidth.Text);
+            Convert.ToString(txt_PanelWidth.Text);
+            Convert.ToString(txt_PanelHeight.Text);
+            Convert.ToString(cmb_Position_Plane.Text);
+            Convert.ToString(cmb_Position_Depth.Text);
+            Convert.ToString(cmb_Position_Rotation.Text);
+            Convert.ToString(cb_PanelMaterial.Text);
+            Convert.ToString(txt_PanelName.Text);
+
+            string ProfilPaneli = Convert.ToString(txt_PanelHeight.Text) + "*" + Convert.ToString(txt_PanelWidth.Text);
+
+            cl_CreateConcretPanel panel = new cl_CreateConcretPanel(0, 0, 0, Convert.ToDouble(txt_PanelLength.Text), 0, 0, ProfilPaneli, Convert.ToString(cb_PanelMaterial.Text), Convert.ToString(txt_PanelName.Text), "1", 5, "Б", 1, "123", Convert.ToString(cmb_Position_Plane.Text), Convert.ToString(cmb_Position_Depth.Text), Convert.ToString(cmb_Position_Rotation.Text));
+            //[MIDDLE СЕРЕДИНА; LEFT СЛЕВА; RIGHT СПРАВА] ; [MIDDLE СЕРЕДИНА;FRONT СПЕРЕДИ;BEHIND ПОЗАДИ] ; [TOP СВЕРХУ;FRONT СПЕРЕДИ;BELOW СНИЗУ;BACK СЗАДИ]
+
+            panel.InsertPanel();
+
+
+            ArrayList ObjectsToSelect = new ArrayList();
+            ObjectsToSelect.Add(panel);
+            //ObjectsToSelect.Add(b3);
+
+            Tekla.Structures.Model.UI.ModelObjectSelector MS = new Tekla.Structures.Model.UI.ModelObjectSelector();
+            MS.Select(ObjectsToSelect);
+
+            MyModel.CommitChanges();
+        }
+
+
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            // Задаёмся точкой с будущим началом координат плоскости.
+            TSG.Point point0 = new TSG.Point(1000.00, 1000.00, 0.00);
+
+            
+
+            TSG.Point origin0 = new TSG.Point(0.00, 0.00, 0.00);
+            TSG.Point origin1 = new TSG.Point(100.00, 0.00, 0.00);
+            TSG.Point origin2 = new TSG.Point(0.00, 100.00, 0.00);
+
+
+            // Задаём векторами указывающими направление осей X и Y (задаёмся двумя точками, и из координат конца, вычитаем координаты начала)
+            TSG.Vector vectorX = new TSG.Vector(origin1.X - origin0.X, origin1.Y - origin0.Y, origin1.Z - origin0.Z);
+            TSG.Vector vectorY = new TSG.Vector(origin2.X - origin0.X, origin2.Y - origin0.Y, origin2.Z - origin0.Z);
+
+            // Объявляем плоскость на основании точки и двух векторов.
+            TSM.TransformationPlane newPlane = new TSM.TransformationPlane(point0, vectorX, vectorY);
+
+            // Переносим рабочую плоскость модели на новую рабочую плоскость.
+            MyModel.GetWorkPlaneHandler().SetCurrentTransformationPlane(newPlane);
+            MyModel.CommitChanges();
         }
     }
 }
